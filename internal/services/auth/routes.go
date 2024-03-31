@@ -34,6 +34,14 @@ func (h *Handler) register(c *gin.Context) {
 	}
 
 	payload.Token = uuid.NewString()
+	hashPassword, err := h.authStore.HashPassword(payload.Password)
+
+	if err != nil {
+		utils.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	payload.Password = hashPassword
 
 	user, err := h.userStore.CreateUser(payload)
 

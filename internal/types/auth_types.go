@@ -1,3 +1,5 @@
 package types
 
-type AuthStore interface{}
+type AuthStore interface {
+	HashPassword(password string) (string, error)
+}
