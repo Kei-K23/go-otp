@@ -1,6 +1,8 @@
 package auth
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type Store struct {
 	db *sql.DB
@@ -8,4 +10,8 @@ type Store struct {
 
 func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
+}
+
+func (s *Store) HashPassword(password string) {
+	bcrypt
 }

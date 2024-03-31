@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Kei-K23/go-otp/internal/services/auth"
+	"github.com/Kei-K23/go-otp/internal/services/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,9 +30,10 @@ func (apiServer *APIServer) Serve() {
 
 	// services register here
 	authService := auth.NewStore(apiServer.DB)
+	userService := user.NewStore(apiServer.DB)
 
 	// handlers register here
-	authHandler := auth.NewHandler(authService)
+	authHandler := auth.NewHandler(authService, userService)
 
 	// register routes here
 	authHandler.RegisterRoutes(*v1)

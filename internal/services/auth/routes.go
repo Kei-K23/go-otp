@@ -4,25 +4,50 @@ import (
 	"net/http"
 
 	"github.com/Kei-K23/go-otp/internal/types"
+	"github.com/Kei-K23/go-otp/internal/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type Handler struct {
 	authStore types.AuthStore
+	userStore types.UserStore
 }
 
 type Login struct {
 	Username string `json:"username" binding:"required"`
 }
 
-func NewHandler(authStore types.AuthStore) *Handler {
-	return &Handler{authStore: authStore}
+func NewHandler(authStore types.AuthStore, userStore types.UserStore) *Handler {
+	return &Handler{authStore: authStore, userStore: userStore}
 }
 
 func (h *Handler) RegisterRoutes(router gin.RouterGroup) {
-	router.GET("/register", h.login)
+	router.POST("/register", h.register)
 }
 
-func (h *Handler) login(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"status": "you are logged in"})
+func (h *Handler) register(c *gin.Context) {
+	var payload types.CreateUser
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		utils.WriteError(c, http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	payload.Token = uuid.NewString()
+
+	user, err := h.userStore.CreateUser(payload)
+
+	if err != nil {
+		utils.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	utils.WriteJSON(c, http.StatusCreated, gin.H{
+		"id":         user.ID,
+		"name":       user.Name,
+		"email":      user.Email,
+		"phone":      user.Phone,
+		"IsVerified": false,
+		"created_at": user.CreatedAt,
+	})
 }
