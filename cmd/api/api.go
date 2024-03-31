@@ -26,8 +26,8 @@ func (apiServer *APIServer) Serve() {
 	// protected routes
 	// protected := v1.Group("")
 
-	r.Run(":9999")
-	fmt.Println("server is running on http://localhost:9999")
+	r.Run(apiServer.Addr)
+	fmt.Printf("server is running on http://localhost%s", apiServer.Addr)
 }
 
 func NewAPIServer(apiServer APIServer) *APIServer {
