@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/Kei-K23/go-otp/internal/services/auth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,6 +26,15 @@ func (apiServer *APIServer) Serve() {
 
 	// protected routes
 	// protected := v1.Group("")
+
+	// services register here
+	authService := auth.NewStore(apiServer.DB)
+
+	// handlers register here
+	authHandler := auth.NewHandler(authService)
+
+	// register routes here
+	authHandler.RegisterRoutes(*v1)
 
 	r.Run(apiServer.Addr)
 	fmt.Printf("server is running on http://localhost%s", apiServer.Addr)
