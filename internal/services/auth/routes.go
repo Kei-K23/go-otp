@@ -1,11 +1,13 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Kei-K23/go-otp/internal/types"
 	"github.com/Kei-K23/go-otp/internal/utils"
 	"github.com/Kei-K23/go-otp/templates/register"
+	"github.com/Kei-K23/go-otp/templates/verify"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -25,6 +27,9 @@ func NewHandler(authStore types.AuthStore, userStore types.UserStore) *Handler {
 
 func (h *Handler) RegisterRoutes(router gin.RouterGroup) {
 	router.POST("/register", h.register)
+	router.GET("/verify", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "", verify.Verify())
+	})
 	router.GET("/register", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "", register.Register())
 	})
@@ -32,7 +37,7 @@ func (h *Handler) RegisterRoutes(router gin.RouterGroup) {
 
 func (h *Handler) register(c *gin.Context) {
 	var payload types.CreateUser
-	if err := c.ShouldBindJSON(&payload); err != nil {
+	if err := c.ShouldBind(&payload); err != nil {
 		utils.WriteError(c, http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -56,12 +61,15 @@ func (h *Handler) register(c *gin.Context) {
 		return
 	}
 
-	utils.WriteJSON(c, http.StatusCreated, gin.H{
-		"id":         user.ID,
-		"name":       user.Name,
-		"email":      user.Email,
-		"phone":      user.Phone,
-		"IsVerified": false,
-		"created_at": user.CreatedAt,
-	})
+	// NOTE: This is a workaround for JSON responses
+	// utils.WriteJSON(c, http.StatusCreated, gin.H{
+	// 	"id":         user.ID,
+	// 	"name":       user.Name,
+	// 	"email":      user.Email,
+	// 	"phone":      user.Phone,
+	// 	"IsVerified": false,
+	// 	"created_at": user.CreatedAt,
+	// })
+
+	c.Redirect(303, fmt.Sprintf("/api/v1/verify?userId=%d", user.ID))
 }

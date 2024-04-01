@@ -6,7 +6,7 @@ templ Register() {
 	@layout.Base() {
 		<div class="container">
 			<h1 class="text-center mt-4">Register to use GO + TODO</h1>
-			<form>
+			<form action="/api/v1/register" method="POST">
 				<div class="mb-3">
 					<label for="name" class="form-label">Name</label>
 					<input type="text" class="form-control" id="name" name="name"/>

@@ -1,0 +1,19 @@
+package verify
+
+import "github.com/Kei-K23/go-otp/templates/layout"
+
+templ Verify() {
+	@layout.Base() {
+		<div class="container">
+			<h1 class="text-center mt-4">Verify your account</h1>
+			<form action="/api/v1/register" method="POST">
+				<div class="mb-3">
+					<label for="token" class="form-label">Token</label>
+					<input type="text" class="form-control" id="token" aria-describedby="tokenHelp" name="token"/>
+					<div id="tokenHelp" class="form-text">Enter your token here.</div>
+				</div>
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
+		</div>
+	}
+}
