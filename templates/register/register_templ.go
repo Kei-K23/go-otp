@@ -31,7 +31,7 @@ func Register() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><h1 class=\"text-danger\">Hello World This is register</h1></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container\"><h1 class=\"text-center mt-4\">Register to use GO + TODO</h1><form><div class=\"mb-3\"><label for=\"name\" class=\"form-label\">Name</label> <input type=\"text\" class=\"form-control\" id=\"name\" name=\"name\"></div><div class=\"mb-3\"><label for=\"email\" class=\"form-label\">Email address</label> <input type=\"email\" class=\"form-control\" id=\"email\" aria-describedby=\"emailHelp\" name=\"email\"><div id=\"emailHelp\" class=\"form-text\">We'll never share your email with anyone else.</div></div><div class=\"mb-3\"><label for=\"phone\" class=\"form-label\">Phone</label> <input type=\"text\" class=\"form-control\" id=\"phone\" aria-describedby=\"phoneHelp\" name=\"phone\"><div id=\"phoneHelp\" class=\"form-text\">Make sure to provide real phone number becasue system use that phone number to send verification code via SMS</div></div><div class=\"mb-3\"><label for=\"password\" class=\"form-label\">Password</label> <input type=\"password\" class=\"form-control\" id=\"password\" name=\"password\"></div><button type=\"submit\" class=\"btn btn-primary\">Register</button></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

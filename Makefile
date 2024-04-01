@@ -5,6 +5,7 @@ test:
 	@go test -v ./...
 
 run: build
+	@templ generate
 	@./bin/main
 
 migration:
