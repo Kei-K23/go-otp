@@ -12,6 +12,9 @@ import (
 	"github.com/Kei-K23/go-otp/templates/verify"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/twilio/twilio-go"
+
+	api "github.com/twilio/twilio-go/rest/api/v2010"
 )
 
 type Handler struct {
@@ -91,6 +94,25 @@ func (h *Handler) register(c *gin.Context) {
 	// 	"IsVerified": false,
 	// 	"created_at": user.CreatedAt,
 	// })
+
+	client := twilio.NewRestClient()
+
+	params := &api.CreateMessageParams{}
+	params.SetBody(fmt.Sprintf("Go + TODO account verification token, %s", user.Token))
+	params.SetFrom("+16466062730")
+	params.SetTo(user.Phone)
+
+	resp, err := client.Api.CreateMessage(params)
+	// handle error response
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		if resp.Sid != nil {
+			fmt.Println(*resp.Sid)
+		} else {
+			fmt.Println(resp.Sid)
+		}
+	}
 
 	c.Redirect(303, fmt.Sprintf("/api/v1/verify?userId=%d", user.ID))
 }
