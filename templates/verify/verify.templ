@@ -2,11 +2,16 @@ package verify
 
 import "github.com/Kei-K23/go-otp/templates/layout"
 
-templ Verify() {
+templ Verify(url, statusErr string) {
 	@layout.Base() {
 		<div class="container">
 			<h1 class="text-center mt-4">Verify your account</h1>
-			<form action="/api/v1/register" method="POST">
+			if statusErr != "" {
+				<div class="alert alert-danger" role="alert">
+					Something went wrong
+				</div>
+			}
+			<form action={ templ.SafeURL(url) } method="POST">
 				<div class="mb-3">
 					<label for="token" class="form-label">Token</label>
 					<input type="text" class="form-control" id="token" aria-describedby="tokenHelp" name="token"/>

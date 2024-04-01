@@ -59,3 +59,29 @@ func (s *Store) CreateUser(cU types.CreateUser) (*types.User, error) {
 
 	return user, nil
 }
+
+func (s *Store) VerifyUserAcc(uID int, token string) error {
+	user, err := s.GetUserById(int64(uID))
+	if err != nil {
+		return fmt.Errorf("error verifying user: %v", err)
+	}
+
+	if user.Token != token {
+		return fmt.Errorf("verify failed! Token is invalid")
+	}
+
+	stmt, err := s.db.Prepare("UPDATE users SET is_verified = ? where id = ?")
+	if err != nil {
+		return fmt.Errorf("error when preparing query: %v", err)
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(true, uID)
+
+	if err != nil {
+		return fmt.Errorf("error when executing query: %v", err)
+	}
+
+	return nil
+}

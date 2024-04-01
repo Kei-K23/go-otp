@@ -12,7 +12,7 @@ import "bytes"
 
 import "github.com/Kei-K23/go-otp/templates/layout"
 
-func Verify() templ.Component {
+func Verify(url, statusErr string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -31,7 +31,26 @@ func Verify() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container\"><h1 class=\"text-center mt-4\">Verify your account</h1><form action=\"/api/v1/register\" method=\"POST\"><div class=\"mb-3\"><label for=\"token\" class=\"form-label\">Token</label> <input type=\"text\" class=\"form-control\" id=\"token\" aria-describedby=\"tokenHelp\" name=\"token\"><div id=\"tokenHelp\" class=\"form-text\">Enter your token here.</div></div><button type=\"submit\" class=\"btn btn-primary\">Submit</button></form></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container\"><h1 class=\"text-center mt-4\">Verify your account</h1>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if statusErr != "" {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"alert alert-danger\" role=\"alert\">Something went wrong</div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form action=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var3 templ.SafeURL = templ.SafeURL(url)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var3)))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" method=\"POST\"><div class=\"mb-3\"><label for=\"token\" class=\"form-label\">Token</label> <input type=\"text\" class=\"form-control\" id=\"token\" aria-describedby=\"tokenHelp\" name=\"token\"><div id=\"tokenHelp\" class=\"form-text\">Enter your token here.</div></div><button type=\"submit\" class=\"btn btn-primary\">Submit</button></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

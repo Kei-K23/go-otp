@@ -3,6 +3,7 @@ package types
 type UserStore interface {
 	GetUserById(id int64) (*User, error)
 	CreateUser(cU CreateUser) (*User, error)
+	VerifyUserAcc(uID int, token string) error
 }
 
 type User struct {
@@ -22,6 +23,10 @@ type CreateUser struct {
 	Password string `json:"password" form:"password" binding:"required"`
 	Phone    string `json:"phone" form:"phone" binding:"required`
 	Token    string `json:"token"`
+}
+
+type VerifyUser struct {
+	Token string `json:"token" form:"token" binding:"required"`
 }
 
 type UpdateUser struct {
