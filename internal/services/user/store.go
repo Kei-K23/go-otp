@@ -33,6 +33,24 @@ func (s *Store) GetUserById(id int64) (*types.User, error) {
 	return &user, nil
 }
 
+func (s *Store) GetUserByEmail(email string) (*types.User, error) {
+	var user types.User
+
+	stmt, err := s.db.Prepare("SELECT * FROM users WHERE email = ?")
+
+	if err != nil {
+		return nil, fmt.Errorf("error preparing user: %v", err)
+	}
+
+	err = stmt.QueryRow(email).Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Phone, &user.Token, &user.IsVerified, &user.CreatedAt)
+
+	if err != nil {
+		return nil, fmt.Errorf("error executing user: %v", err)
+	}
+
+	return &user, nil
+}
+
 func (s *Store) CreateUser(cU types.CreateUser) (*types.User, error) {
 	stmt, err := s.db.Prepare("INSERT INTO users (name, email, password, phone, token) VALUES (?, ?, ?, ?, ?)")
 

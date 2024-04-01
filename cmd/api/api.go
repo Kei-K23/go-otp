@@ -40,9 +40,11 @@ func (apiServer *APIServer) Serve() {
 
 	// handlers register here
 	authHandler := auth.NewHandler(authService, userService)
+	userHandler := user.NewHandler(userService)
 
 	// register routes here
 	authHandler.RegisterRoutes(*v1)
+	userHandler.RegisterRoutes(*v1)
 
 	r.Run(apiServer.Addr)
 	fmt.Printf("server is running on http://localhost%s", apiServer.Addr)

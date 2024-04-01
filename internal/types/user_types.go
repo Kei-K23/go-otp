@@ -4,6 +4,7 @@ type UserStore interface {
 	GetUserById(id int64) (*User, error)
 	CreateUser(cU CreateUser) (*User, error)
 	VerifyUserAcc(uID int, token string) error
+	GetUserByEmail(email string) (*User, error)
 }
 
 type User struct {

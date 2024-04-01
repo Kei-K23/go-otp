@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Kei-K23/go-otp/internal/config"
 	"github.com/Kei-K23/go-otp/internal/types"
 	"github.com/Kei-K23/go-otp/internal/utils"
 	"github.com/Kei-K23/go-otp/templates/login"
@@ -145,27 +146,37 @@ func (h *Handler) verify(c *gin.Context) {
 }
 
 func (h *Handler) login(c *gin.Context) {
-	var payload types.VerifyUser
-	id := c.Query("userId")
-
-	uID, err := strconv.Atoi(id)
-
-	if err != nil {
-		utils.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	var payload types.UserLogin
 
 	if err := c.ShouldBind(&payload); err != nil {
 		utils.WriteError(c, http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = h.userStore.VerifyUserAcc(uID, payload.Token)
+	user, err := h.userStore.GetUserByEmail(payload.Email)
 
 	if err != nil {
-		utils.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		c.Redirect(303, "/api/v1/login?error=error")
 		return
 	}
 
-	c.Redirect(303, "/api/v1/login")
+	err = h.authStore.VerifyPassword(payload.Password, user.Password)
+
+	if err != nil {
+		fmt.Println(err)
+		c.Redirect(303, "/api/v1/login?error=error")
+		return
+	}
+
+	token, err := h.authStore.CreateJWT([]byte(config.Env.JWT_SECRET_KEY), user.ID)
+
+	if err != nil {
+		fmt.Println(err)
+		c.Redirect(303, "/api/v1/login?error=error")
+		return
+	}
+
+	c.SetCookie("go_todo_token", token, 3600, "/", "", false, true) // SetCookie(name, value, maxAge, path, domain, secure, httpOnly)
+	c.Redirect(303, fmt.Sprintf("/api/v1/users/%d", user.ID))
 }

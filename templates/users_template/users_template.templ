@@ -1,0 +1,16 @@
+package users_template
+
+import "github.com/Kei-K23/go-otp/templates/layout"
+import "github.com/Kei-K23/go-otp/internal/types"
+
+templ Users(user types.User) {
+	@layout.Base() {
+		<div class="container">
+			<ul>
+				<li>{ user.Name }</li>
+				<li>{ user.Email }</li>
+				<li>{ user.Phone }</li>
+			</ul>
+		</div>
+	}
+}
