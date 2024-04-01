@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/Kei-K23/go-otp/internal/middlewares"
 	"github.com/Kei-K23/go-otp/internal/services/auth"
 	"github.com/Kei-K23/go-otp/internal/services/user"
 	"github.com/a-h/templ/examples/integration-gin/gintemplrenderer"
@@ -32,7 +33,7 @@ func (apiServer *APIServer) Serve() {
 	v1 := api.Group("/v1")
 
 	// protected routes
-	// protected := v1.Group("")
+	protected := v1.Group("")
 
 	// services register here
 	authService := auth.NewStore(apiServer.DB)
@@ -44,6 +45,9 @@ func (apiServer *APIServer) Serve() {
 
 	// register routes here
 	authHandler.RegisterRoutes(*v1)
+
+	// add auth middleware
+	protected.Use(middlewares.AuthMiddleware)
 	userHandler.RegisterRoutes(*v1)
 
 	r.Run(apiServer.Addr)
