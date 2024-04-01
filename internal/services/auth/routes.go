@@ -5,6 +5,7 @@ import (
 
 	"github.com/Kei-K23/go-otp/internal/types"
 	"github.com/Kei-K23/go-otp/internal/utils"
+	"github.com/Kei-K23/go-otp/templates/register"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -24,6 +25,9 @@ func NewHandler(authStore types.AuthStore, userStore types.UserStore) *Handler {
 
 func (h *Handler) RegisterRoutes(router gin.RouterGroup) {
 	router.POST("/register", h.register)
+	router.GET("/register", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "", register.Register())
+	})
 }
 
 func (h *Handler) register(c *gin.Context) {
@@ -33,7 +37,9 @@ func (h *Handler) register(c *gin.Context) {
 		return
 	}
 
-	payload.Token = uuid.NewString()
+	randomUUID := uuid.New()
+	payload.Token = randomUUID.String()[:8]
+
 	hashPassword, err := h.authStore.HashPassword(payload.Password)
 
 	if err != nil {

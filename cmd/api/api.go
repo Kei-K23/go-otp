@@ -6,6 +6,7 @@ import (
 
 	"github.com/Kei-K23/go-otp/internal/services/auth"
 	"github.com/Kei-K23/go-otp/internal/services/user"
+	"github.com/a-h/templ/examples/integration-gin/gintemplrenderer"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +18,11 @@ type APIServer struct {
 func (apiServer *APIServer) Serve() {
 	r := gin.New()
 
+	ginHtmlRenderer := r.HTMLRender
+	r.HTMLRender = &gintemplrenderer.HTMLTemplRenderer{FallbackHtmlRenderer: ginHtmlRenderer}
+
+	// Disable trusted proxy warning.
+	r.SetTrustedProxies(nil)
 	// middleware register here
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
