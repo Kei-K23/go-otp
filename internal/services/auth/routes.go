@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/Kei-K23/go-otp/internal/config"
 	"github.com/Kei-K23/go-otp/internal/types"
@@ -56,7 +57,9 @@ func (h *Handler) RegisterRoutes(router gin.RouterGroup) {
 		c.HTML(http.StatusOK, "", register.Register())
 	})
 	router.GET("/login", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "", login.Login())
+		statusErr := c.Query("error")
+
+		c.HTML(http.StatusOK, "", login.Login(statusErr))
 	})
 }
 
@@ -177,6 +180,6 @@ func (h *Handler) login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("go_todo_token", token, 3600, "/", "", false, true) // SetCookie(name, value, maxAge, path, domain, secure, httpOnly)
-	c.Redirect(303, fmt.Sprintf("/api/v1/users/%d", user.ID))
+	c.SetCookie("go_todo_token", token, int(time.Second*time.Duration(3600*24*7)), "/", "", false, true) // SetCookie(name, value, maxAge, path, domain, secure, httpOnly)
+	c.Redirect(303, "/api/v1/users")
 }

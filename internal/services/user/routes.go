@@ -2,8 +2,8 @@ package user
 
 import (
 	"net/http"
-	"strconv"
 
+	"github.com/Kei-K23/go-otp/internal/middlewares"
 	"github.com/Kei-K23/go-otp/internal/types"
 	"github.com/Kei-K23/go-otp/internal/utils"
 	"github.com/Kei-K23/go-otp/templates/users_template"
@@ -23,14 +23,19 @@ func NewHandler(userStore types.UserStore) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(router gin.RouterGroup) {
-	router.GET("/users/:userId", func(c *gin.Context) {
+	router.GET("/users", func(c *gin.Context) {
 
-		userId := c.Param("userId")
+		// Retrieve user ID from the context
+		userID, exists := c.Get(string(middlewares.ClaimsContextKey))
+		if !exists {
+			c.Redirect(303, "/api/v1/login")
+			return
+		}
 
-		id, err := strconv.Atoi(userId)
-
-		if err != nil {
-			utils.WriteError(c, http.StatusInternalServerError, gin.H{"error": err})
+		// Convert userID to the appropriate type
+		id, ok := userID.(int)
+		if !ok {
+			utils.WriteError(c, http.StatusInternalServerError, gin.H{"error": "user ID is not of type int64"})
 			return
 		}
 

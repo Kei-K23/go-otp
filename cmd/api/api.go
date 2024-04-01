@@ -44,11 +44,12 @@ func (apiServer *APIServer) Serve() {
 	userHandler := user.NewHandler(userService)
 
 	// register routes here
+	v1.Use(middlewares.CheckCookieExist)
 	authHandler.RegisterRoutes(*v1)
 
 	// add auth middleware
 	protected.Use(middlewares.AuthMiddleware)
-	userHandler.RegisterRoutes(*v1)
+	userHandler.RegisterRoutes(*protected)
 
 	r.Run(apiServer.Addr)
 	fmt.Printf("server is running on http://localhost%s", apiServer.Addr)

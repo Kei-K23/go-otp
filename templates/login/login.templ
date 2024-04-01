@@ -2,10 +2,15 @@ package login
 
 import "github.com/Kei-K23/go-otp/templates/layout"
 
-templ Login() {
+templ Login(statusErr string) {
 	@layout.Base() {
 		<div class="container">
-			<h1 class="text-center mt-4">Register to use GO + TODO</h1>
+			<h1 class="text-center mt-4">Login to use GO + TODO</h1>
+			if statusErr != "" {
+				<div class="alert alert-danger" role="alert">
+					Something went wrong when login
+				</div>
+			}
 			<form action="/api/v1/login" method="POST">
 				<div class="mb-3">
 					<label for="email" class="form-label">Email address</label>

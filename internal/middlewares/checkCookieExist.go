@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"net/http"
 	"strings"
 
 	"github.com/Kei-K23/go-otp/internal/config"
@@ -10,11 +9,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type ContextKey string
-
-const ClaimsContextKey ContextKey = "claims"
-
-func AuthMiddleware(c *gin.Context) {
+func CheckCookieExist(c *gin.Context) {
 	authHeader, err := c.Cookie("go_todo_token")
 
 	if err != nil {
@@ -22,9 +17,8 @@ func AuthMiddleware(c *gin.Context) {
 		return
 	}
 
-	// Check if Authorization header is present
 	if authHeader == "" {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "authorization header is missing"})
+		c.Redirect(303, "/api/v1/login")
 		return
 	}
 
@@ -39,19 +33,10 @@ func AuthMiddleware(c *gin.Context) {
 
 	// Check for token parsing errors
 	if err != nil || !token.Valid {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+		c.Redirect(303, "/api/v1/login")
 		return
 	}
 
-	// Extract claims from the token
-	claims, ok := token.Claims.(*auth.JWTClaim)
-	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unable to extract claims from token"})
-		return
-	}
-
-	// Set claims in the context
-	c.Set(string(ClaimsContextKey), claims.UserID)
-
+	c.Redirect(303, "/api/v1/users")
 	c.Next()
 }

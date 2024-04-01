@@ -12,7 +12,7 @@ import "bytes"
 
 import "github.com/Kei-K23/go-otp/templates/layout"
 
-func Login() templ.Component {
+func Login(statusErr string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -31,7 +31,17 @@ func Login() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container\"><h1 class=\"text-center mt-4\">Register to use GO + TODO</h1><form action=\"/api/v1/login\" method=\"POST\"><div class=\"mb-3\"><label for=\"email\" class=\"form-label\">Email address</label> <input type=\"email\" class=\"form-control\" id=\"email\" aria-describedby=\"emailHelp\" name=\"email\"><div id=\"emailHelp\" class=\"form-text\">We'll never share your email with anyone else.</div></div><div class=\"mb-3\"><label for=\"password\" class=\"form-label\">Password</label> <input type=\"password\" class=\"form-control\" id=\"password\" name=\"password\"></div><button type=\"submit\" class=\"btn btn-primary\">Login</button></form></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container\"><h1 class=\"text-center mt-4\">Login to use GO + TODO</h1>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if statusErr != "" {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"alert alert-danger\" role=\"alert\">Something went wrong when login</div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form action=\"/api/v1/login\" method=\"POST\"><div class=\"mb-3\"><label for=\"email\" class=\"form-label\">Email address</label> <input type=\"email\" class=\"form-control\" id=\"email\" aria-describedby=\"emailHelp\" name=\"email\"><div id=\"emailHelp\" class=\"form-text\">We'll never share your email with anyone else.</div></div><div class=\"mb-3\"><label for=\"password\" class=\"form-label\">Password</label> <input type=\"password\" class=\"form-control\" id=\"password\" name=\"password\"></div><button type=\"submit\" class=\"btn btn-primary\">Login</button></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
