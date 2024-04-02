@@ -53,4 +53,9 @@ func (h *Handler) RegisterRoutes(router gin.RouterGroup) {
 
 		c.HTML(http.StatusOK, "", users_template.Users(*user))
 	})
+	// user logout
+	router.GET("/users/logout", func(c *gin.Context) {
+		c.SetCookie("go_todo_token", "", -1, "/", "", false, true)
+		c.Redirect(303, "/api/v1/login")
+	})
 }
