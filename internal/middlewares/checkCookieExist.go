@@ -13,13 +13,11 @@ func CheckCookieExist(c *gin.Context) {
 	authHeader, err := c.Cookie("go_todo_token")
 
 	if err != nil {
-		c.Redirect(303, "/api/v1/login")
-		return
+		c.Next()
 	}
 
 	if authHeader == "" {
-		c.Redirect(303, "/api/v1/login")
-		return
+		c.Next()
 	}
 
 	// Extract the token from the Authorization header
@@ -33,8 +31,7 @@ func CheckCookieExist(c *gin.Context) {
 
 	// Check for token parsing errors
 	if err != nil || !token.Valid {
-		c.Redirect(303, "/api/v1/login")
-		return
+		c.Next()
 	}
 
 	c.Redirect(303, "/api/v1/users")

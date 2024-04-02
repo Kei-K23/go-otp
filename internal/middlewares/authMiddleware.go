@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"net/http"
 	"strings"
 
 	"github.com/Kei-K23/go-otp/internal/config"
@@ -24,7 +23,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	// Check if Authorization header is present
 	if authHeader == "" {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "authorization header is missing"})
+		c.Redirect(303, "/api/v1/login")
 		return
 	}
 
@@ -39,19 +38,18 @@ func AuthMiddleware(c *gin.Context) {
 
 	// Check for token parsing errors
 	if err != nil || !token.Valid {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+		c.Redirect(303, "/api/v1/login")
 		return
 	}
 
 	// Extract claims from the token
 	claims, ok := token.Claims.(*auth.JWTClaim)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unable to extract claims from token"})
+		c.Redirect(303, "/api/v1/login")
 		return
 	}
 
 	// Set claims in the context
 	c.Set(string(ClaimsContextKey), claims.UserID)
-
 	c.Next()
 }
