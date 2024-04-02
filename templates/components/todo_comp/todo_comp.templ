@@ -1,0 +1,11 @@
+package todo_comp
+
+import "github.com/Kei-K23/go-otp/internal/types"
+
+templ TodoComp(todos []types.Todo) {
+	<ul id="todo-lists">
+		for _, todo := range todos {
+			<li>{ todo.Todo }</li>
+		}
+	</ul>
+}

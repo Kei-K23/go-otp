@@ -9,6 +9,7 @@ import (
 	"github.com/Kei-K23/go-otp/internal/config"
 	"github.com/Kei-K23/go-otp/internal/types"
 	"github.com/Kei-K23/go-otp/internal/utils"
+
 	"github.com/Kei-K23/go-otp/templates/login"
 	"github.com/Kei-K23/go-otp/templates/register"
 	"github.com/Kei-K23/go-otp/templates/verify"
@@ -99,7 +100,7 @@ func (h *Handler) register(c *gin.Context) {
 
 	params := &api.CreateMessageParams{}
 	params.SetBody(fmt.Sprintf("Go + TODO account verification token, %s", user.Token))
-	params.SetFrom("+16466062730")
+	params.SetFrom(config.Env.SENDER)
 	params.SetTo(user.Phone)
 
 	resp, err := client.Api.CreateMessage(params)
@@ -155,6 +156,11 @@ func (h *Handler) login(c *gin.Context) {
 		fmt.Println(err)
 		c.Redirect(303, "/api/v1/login?error=error")
 		return
+	}
+
+	if !user.IsVerified {
+		fmt.Println(err)
+		c.Redirect(303, fmt.Sprintf("/api/v1/verify?userId=%d", user.ID))
 	}
 
 	err = h.authStore.VerifyPassword(payload.Password, user.Password)

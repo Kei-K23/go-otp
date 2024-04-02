@@ -12,14 +12,15 @@ import (
 
 type Handler struct {
 	userStore types.UserStore
+	todoStore types.TodoStore
 }
 
 type Login struct {
 	Username string `json:"username" binding:"required"`
 }
 
-func NewHandler(userStore types.UserStore) *Handler {
-	return &Handler{userStore: userStore}
+func NewHandler(userStore types.UserStore, todoStore types.TodoStore) *Handler {
+	return &Handler{userStore: userStore, todoStore: todoStore}
 }
 
 func (h *Handler) RegisterRoutes(router gin.RouterGroup) {
@@ -51,7 +52,14 @@ func (h *Handler) RegisterRoutes(router gin.RouterGroup) {
 			return
 		}
 
-		c.HTML(http.StatusOK, "", users_template.Users(*user))
+		todos, err := h.todoStore.GetAllTodoByUserId(id)
+
+		if err != nil {
+			utils.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.HTML(http.StatusOK, "", users_template.Users(*user, todos))
 	})
 	// user logout
 	router.GET("/users/logout", func(c *gin.Context) {

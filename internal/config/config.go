@@ -9,6 +9,7 @@ import (
 type Config struct {
 	DB_CONNECTION  string
 	JWT_SECRET_KEY string
+	SENDER         string
 }
 
 var Env = initEnv()
@@ -16,7 +17,7 @@ var Env = initEnv()
 func initEnv() Config {
 	godotenv.Load()
 
-	return Config{DB_CONNECTION: getEnv("DB_CONNECTION"), JWT_SECRET_KEY: getEnv("JWT_SECRET_KEY")}
+	return Config{DB_CONNECTION: getEnv("DB_CONNECTION"), JWT_SECRET_KEY: getEnv("JWT_SECRET_KEY"), SENDER: getEnv("SENDER")}
 }
 
 func getEnv(key string) string {
